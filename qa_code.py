@@ -388,7 +388,9 @@ class QuestionParser():
         """
         """
         answers = []
-        candidates = self.disamb_dict[ent]
+        candidates = self.disamb_dict.get(ent)
+        if not candidates:
+            return None
         for c in candidates:
             for cl in pred_classes:
                 a = self.obj_dict[c].get(cl)
