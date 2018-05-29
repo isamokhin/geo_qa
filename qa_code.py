@@ -408,14 +408,15 @@ class QuestionParser():
         if not ent:
             return self.NO_ANSWER
         if self.model_name == 'perceptron':
-            pred_classes = self.qa_model.get_scored_classes(feats)[:3]
+            pred_classes = self.qa_model.get_scored_classes(feats)[:1]
         elif self.model_name == 'logistic':
             pred_probs = self.qa_model.predict_proba([feats])[0]
             prob_per_class = dict(zip(self.qa_model.classes_, pred_probs))
+            prob_per_class = {k:v for k,v in prob_per_class.items() if v > 0.1}
             cl_by_prob = list(map(lambda x: x[0], 
                                   sorted(zip(self.qa_model.classes_, prob_per_class), 
                                          key=lambda x: x[1], reverse=True)))
-            pred_classes = cl_by_prob[:3]
+            pred_classes = cl_by_prob[:1]
         answers = self.find_answers(ent, pred_classes)
         if not answers:
             return self.NO_ANSWER
